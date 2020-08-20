@@ -1,11 +1,14 @@
 import React from 'react';
+import axios from 'axios';
+
 
 class Login extends React.Component{
     constructor(){
     super();
         this.state ={
             username: "",
-            password: ""
+            password: "",
+            isLoading:false
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -22,13 +25,18 @@ class Login extends React.Component{
             username:"",
             password:""
         })
+        axios.post("http://localhost:5000/api/login", this.state)
+            .then(res =>{ localStorage.setItem('token', res.data.payload)
+                window.location.replace("/dashboard")
+                })
+            .catch(err => {console.log(err)})
     }
 
 
     render() {
         return(
         <div>
-            <form onSubmit="">
+            <form className="LoginForm" onSubmit={this.handleSubmit}>
                 <label>Username:
                 <input 
                     name="username"
@@ -40,11 +48,11 @@ class Login extends React.Component{
                 <input 
                     name="password"
                     value={this.state.password}
-                    onChange={this.handleSubmit}
+                    onChange={this.handleChange}
                     type="password"
                 />
                 </label>
-                <button>Log in</button>
+                <button type="submit">Log in</button>
             </form>
         </div>
         )
